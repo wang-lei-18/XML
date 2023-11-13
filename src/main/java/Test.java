@@ -1,5 +1,6 @@
 import org.dom4j.DocumentException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -7,6 +8,7 @@ import java.util.List;
  */
 public class Test {
     public static void main(String[] args) throws DocumentException, InstantiationException, IllegalAccessException {
+        // 验证xml转对象
         String XMLStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Invoice>" +
                 "<Head>" +
                 "<MsgRef>23242F8B7D80C0A801222BE89ED553F9549D</MsgRef>" +
@@ -38,6 +40,38 @@ public class Test {
                 "</Invoice>";
         Invoice invoice = (Invoice)XMLUtils.XMLToObject(XMLStr, Invoice.class);
         System.out.println(invoice);
+
+        // 验证对象转XML
+        Invoice invoice1 = new Invoice();
+        Head head = new Head();
+        head.setMsgNo("11111111");
+        head.setMsgRef("2222222");
+        invoice1.setHead(head);
+        Voucher voucher = new Voucher();
+        Main main = new Main();
+        InvoicingParty invoicingParty = new InvoicingParty();
+        invoicingParty.setInvoicingPartyCode("3333333");
+        invoicingParty.setInvoicingPartyName("4444444");
+        main.setInvoicingParty(invoicingParty);
+        PayerParty payerParty = new PayerParty();
+        payerParty.setPayerPartyCode("555555555");
+        payerParty.setPayerPartyName("666666666");
+        payerParty.setPayerPartyType("777777777");
+        payerParty.setPhoneNo("8888888");
+        main.setPayerParty(payerParty);
+        main.setRemark("9999999");
+        voucher.setMain(main);
+        List<Item> list = new ArrayList();
+        Item item = new Item();
+        item.setItemID("000000000");
+        item.setItemRemark("112233");
+        list.add(item);
+        voucher.setDetails(list);
+        Msg msg = new Msg();
+        msg.setVoucher(voucher);
+        invoice1.setMsg(msg);
+        String xmlStr = XMLUtils.ObjectToXML(invoice1);
+        System.out.println(xmlStr);
     }
 }
 
